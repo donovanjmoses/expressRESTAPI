@@ -56,7 +56,10 @@ app.put("/api/courses/:id", (req, res) => {
     // look up course
     // if not found, return 404
     const course = courses.find(c => c.id === parseInt(req.params.id));
-    if(!course) res.status(404).send("The course was not found.");
+    if(!course) {
+        res.status(404).send("The course was not found.");
+        return;
+    }
     // validate course
     const result = validateCourse(req.body);
     // if invalid, return 404 - bad request
@@ -77,6 +80,18 @@ app.get("/api/courses/:id", (req, res) => { // :id is parameter to endpoint
 
 app.get("/api/courses/:id", (req, res) => {
     res.send(req.query); // req.query property enables query strings. URL = localhost:5000/api/posts/2021/1?sortBy=name
+});
+
+app.delete("/api/courses/:id", (req, res) => {
+    // Look up course
+    // If not found, return 404
+    const course = courses.find(c => c.id === parseInt(req.params.id));
+    if(!course) res.status(404).send("The course was not found.");
+    // Delete
+    const index = courses.indexOf(course);
+    courses.splice(index, 1);
+    // Return the same course
+    res.send(course);
 });
 
 // environment variable - PORT
